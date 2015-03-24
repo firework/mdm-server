@@ -12,7 +12,7 @@ from M2Crypto import SMIME, X509, BIO
 # Simple, basic, bare-bones example test server
 # Implements Apple's Mobile Device Management (MDM) protocol
 # Compatible with iOS 4.x devices
-# 
+#
 #
 # David Schuetz, Senior Consultant, Intrepidus Group
 #
@@ -25,13 +25,13 @@ from M2Crypto import SMIME, X509, BIO
 
 #
 # Revision History:
-#  
+#
 # * August 2011    - initial release, Black Hat USA
-# * January 2012   - minor tweaks, including favicon, useful README, and 
+# * January 2012   - minor tweaks, including favicon, useful README, and
 #                    scripts to create certs, log file, etc.
 # * January 2012   - Added support for some iOS 5 functions. ShmooCon 8.
 # * February 2012  - Can now verify signed messages from devices
-#                  - Tweaks to CherryPy startup to avoid errors on console  
+#                  - Tweaks to CherryPy startup to avoid errors on console
 # * January 2014   - Support for multiple enrollments
 #                  - Supports reporting problems
 # * April 2014     - Support for new front end
@@ -62,10 +62,10 @@ sm_obj.set_x509_stack(sk)
 st = X509.X509_Store()
 st.load_info('CA.crt')
 sm_obj.set_x509_store(st)
-    
+
 
 ###########################################################################
-# Update this to match the UUID in the test provisioning profiles, in order 
+# Update this to match the UUID in the test provisioning profiles, in order
 #   to demonstrate removal of the profile
 
 my_test_provisioning_uuid = 'REPLACE-ME-WITH-REAL-UUIDSTRING'
@@ -75,10 +75,10 @@ from web.wsgiserver import CherryPyWSGIServer
 # Python 2.7 requires the PyOpenSSL library
 # Python 3.x should use be able to use the default python SSL
 try:
-    from OpenSSL import SSL 
-    from OpenSSL import crypto 
-except ImportError: 
-    SSL = None 
+    from OpenSSL import SSL
+    from OpenSSL import crypto
+except ImportError:
+    SSL = None
 
 
 CherryPyWSGIServer.ssl_certificate = "Server.crt"
@@ -120,17 +120,25 @@ def setup_commands():
     ret_list = dict()
 
     for cmd in ['DeviceLock', 'ProfileList', 'Restrictions',
-    'CertificateList', 'InstalledApplicationList', 
-    'ProvisioningProfileList', 
+    'CertificateList', 'InstalledApplicationList',
+    'ProvisioningProfileList',
     # new for iOS 5:
     'ManagedApplicationList',]:
         ret_list[cmd] = dict( Command = dict( RequestType = cmd ))
+
+    ret_list['Wallpaper'] = dict(
+        Command = dict(
+            Item = 'Wallpaper',
+            Image = 'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAwFBMVEUoquH///83sOMyruPv+f0fpuBavugapN/c8frU7vkgp+AmqeGj2/MiqOAurOIcpd8pquFPuueCzu4nquH6/f6Z1/Edpt8lqeE7seRCteVGtuVrxep5yu2x4fSn3PPj9PskqeHJ6vjG6fc+s+Tr9/y+5veS1PDg8/vm9fwkqOD+//85seP1/P6N0u8kqeAdpuC75PaAze3O7PhKuObk9PsTod79/v9zyOw0r+Mpq+Gq3vOe2PJjwukkqOEOoN3Y8PrvKybZAAABX0lEQVR42t3V2XKCMBQG4AQK1oTkYNkVC7LUfaWt3Xn/t3LsqGGz5bb9rzKZb5I5MycnqC+1Sh/JqFVkJLWD0p+GhtEKEmBMUShCDqtCEhYcZO/RbjgIlQ7v0TJk+znRz27tL/Axw8zPfSjBlWtGsnJy9ge+xOISLUJFxXgXd7736Gv34ibaxl0VIVFnGCdbCs5xjUWCjJSuDt2b43Y04ABPA+HGsa2Xi+k8nE4YbtU7AVPQUQlSPt/N8CnPAm7OBYpi8tTE9WhQgSwWrJhtFSLbanKLPqvCqZw3wBGpNwWTrKQGfajDT28ZzSoueQnr0OHdplLqEBFvUnEpMZqgTmJtbBZuD+bsSofDlzcSbtJb6w2QALBs+Shc17MvTkCD7637yBTM1DgRrtgU3nIsWKL11tMrz3UKSLXSPAhuR2++C+SHd00VIDrnnNnAfhsABnUcavy7aVaHrYd96+/jAEzbGnZYI6xOAAAAAElFTkSuQmCC',
+            Where = 1
+        )
+    )
 
     ret_list['SecurityInfo'] = dict(
         Command = dict(
             RequestType = 'SecurityInfo',
             Queries = [
-                'HardwareEncryptionCaps', 'PasscodePresent', 
+                'HardwareEncryptionCaps', 'PasscodePresent',
                 'PasscodeCompliant', 'PasscodeCompliantWithProfiles',
             ]
         )
@@ -140,15 +148,15 @@ def setup_commands():
         Command = dict(
             RequestType = 'DeviceInformation',
             Queries = [
-                'AvailableDeviceCapacity', 'BluetoothMAC', 'BuildVersion', 
-                'CarrierSettingsVersion', 'CurrentCarrierNetwork', 
-                'CurrentMCC', 'CurrentMNC', 'DataRoamingEnabled', 
-                'DeviceCapacity', 'DeviceName', 'ICCID', 'IMEI', 'IsRoaming', 
-                'Model', 'ModelName', 'ModemFirmwareVersion', 'OSVersion', 
-                'PhoneNumber', 'Product', 'ProductName', 'SIMCarrierNetwork', 
+                'AvailableDeviceCapacity', 'BluetoothMAC', 'BuildVersion',
+                'CarrierSettingsVersion', 'CurrentCarrierNetwork',
+                'CurrentMCC', 'CurrentMNC', 'DataRoamingEnabled',
+                'DeviceCapacity', 'DeviceName', 'ICCID', 'IMEI', 'IsRoaming',
+                'Model', 'ModelName', 'ModemFirmwareVersion', 'OSVersion',
+                'PhoneNumber', 'Product', 'ProductName', 'SIMCarrierNetwork',
                 'SIMMCC', 'SIMMNC', 'SerialNumber', 'UDID', 'WiFiMAC', 'UDID',
-                'UnlockToken', 'MEID', 'CellularTechnology', 'BatteryLevel', 
-                'SubscriberCarrierNetwork', 'VoiceRoamingEnabled', 
+                'UnlockToken', 'MEID', 'CellularTechnology', 'BatteryLevel',
+                'SubscriberCarrierNetwork', 'VoiceRoamingEnabled',
                 'SubscriberMCC', 'SubscriberMNC', 'DataRoaming', 'VoiceRoaming',
                 'JailbreakDetected'
             ]
@@ -178,7 +186,7 @@ def setup_commands():
 
         ret_list['InstallProfile'] = dict(
             Command = dict(
-                RequestType = 'InstallProfile', 
+                RequestType = 'InstallProfile',
                 Payload = Data(my_test_cfg_profile)
             )
         )
@@ -199,7 +207,7 @@ def setup_commands():
 
         ret_list['InstallProvisioningProfile'] = dict(
             Command = dict(
-                RequestType = 'InstallProvisioningProfile', 
+                RequestType = 'InstallProvisioningProfile',
                 ProvisioningProfile = Data(my_test_prov_profile)
             )
         )
@@ -315,12 +323,12 @@ def queue(cmd, dev_UDID):
     wrapper.append(message)
     wrapper.notify()
 
-    
+
 
 class queue_cmd_post:
     def POST(self):
         global device_list
-        
+
         i = json.loads(web.data())
         cmd = i.pop("cmd", [])
         dev = i.pop("dev[]", [])
@@ -332,7 +340,7 @@ class queue_cmd_post:
         #return update()
         return
 
-class do_mdm:        
+class do_mdm:
     def PUT(self):
         global sm_obj, device_list
         HIGH='[1;31m'
@@ -363,7 +371,7 @@ class do_mdm:
 
         if pl.get('Status') == 'Idle':
             print HIGH + "Idle Status" + NORMAL
-            
+
             print "*FETCHING CMD TO BE SENT FROM DEVICE:", pl['UDID']
             rd = device_list[pl['UDID']].sendCommand()
 
@@ -422,7 +430,7 @@ class get_commands:
 
         drop_list = []
         for key in sorted(mdm_commands.iterkeys()):
-            drop_list.append([key, key])    
+            drop_list.append([key, key])
         return json.dumps(drop_list)
 
 def update():
@@ -435,12 +443,12 @@ def update():
     # Is called on page load and polling
 
     global problems, device_list
-    
+
     # Create list of devices
     dev_list_out = []
     for UDID in device_list:
         dev_list_out.append([device_list[UDID].IP, device_list[UDID].pushMagic])
-    
+
     # Format output as a dict and then return as JSON
     out = dict()
     out['dev_list'] = dev_list_out
@@ -464,7 +472,7 @@ class get_response:
     def POST(self):
         # Endpoint to return a reponse given a UDID and command UUID
         global device_list
-        
+
         i = json.loads(web.data())
         try:
             return device_list[i['UDID']].getResponse(i['UUID'])
@@ -509,7 +517,7 @@ def store_devices():
     global device_list
 
     print "STORING DEVICES..."
-    
+
     # Use pickle to store list of devices
     pickle.dump(device_list, file('devicelist.pickle', 'w'))
 
@@ -555,7 +563,7 @@ def do_TokenUpdate(pl):
     # Store devices in a file for persistence
     store_devices()
 
-    # Return empty dictionary for use in do_mdm 
+    # Return empty dictionary for use in do_mdm
     return dict()
 
 
@@ -582,7 +590,7 @@ class do_problem:
         if web.ctx.path == "/problem":
             problem_detect += ') Debugger attached to '
         elif web.ctx.path == "/problemjb":
-            problem_detect += ') Jailbreak detected for ' 
+            problem_detect += ') Jailbreak detected for '
         problem_detect += web.ctx.ip
 
         problems.insert(0, problem_detect)
@@ -643,7 +651,7 @@ def log_data(out):
 
 
 if __name__ == "__main__":
-    print "Starting Server" 
+    print "Starting Server"
     app = web.application(urls, globals())
     app.internalerror = web.debugerror
 
@@ -657,4 +665,3 @@ else:
     # Placing these above main causes them to run twice
     mdm_commands = setup_commands()
     read_devices()
-
